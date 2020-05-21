@@ -22,7 +22,7 @@ namespace MostFrequentlyUsedWordsInAText
             List<char> delimiterCharsList = new List<char>();
             var topWordsSingleQuotes = new List<string>();
             var topWords = new List<string>();
-            char[] singleQuote = { '\'' };
+            char[] singleQuote = { '\'',' ' };
             for (char c = (char)0; c < 255; c++)
             {
                 if (!(char.IsLetter(c) || c == '\''))
@@ -35,13 +35,13 @@ namespace MostFrequentlyUsedWordsInAText
             {
                 topWords = GetCountedList(inputString, delimiterChars);
 
-                var findSingleQuote = topWords.Any(x => x.Substring(0, 1) == '\''.ToString() || x.Substring(x.Length - 1) == '\''.ToString());
+                var findSingleQuote = topWords.Any(x => x.Substring(0, 1) == '\''.ToString() || x.Substring(x.Length - 1) == '\''.ToString() && x.Contains('\''));
 
                 if (findSingleQuote)
                 {
                     string word = string.Empty;
                     foreach (var item in topWords)
-                        word += item;
+                        word  += item + " ";
 
                     topWordsSingleQuotes = GetCountedList(word, singleQuote);
                 }
