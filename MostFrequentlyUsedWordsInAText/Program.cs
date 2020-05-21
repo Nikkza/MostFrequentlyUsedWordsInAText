@@ -20,6 +20,9 @@ namespace MostFrequentlyUsedWordsInAText
         public static List<string> Top3(string inputString)
         {
             List<char> delimiterCharsList = new List<char>();
+            var topWordsSingleQuotes = new List<string>();
+            var topWords = new List<string>();
+            char[] singleQuote = { '\'' };
             for (char c = (char)0; c < 255; c++)
             {
                 if (!(char.IsLetter(c) || c == '\''))
@@ -27,18 +30,36 @@ namespace MostFrequentlyUsedWordsInAText
             }
 
             char[] delimiterChars = delimiterCharsList.ToArray();
-            var topWords = new List<string>();
-
+          
             if (inputString.Any(x => char.IsLetter(x)))
             {
-                topWords = inputString
-                    .Split(delimiterChars, StringSplitOptions.RemoveEmptyEntries)
+                topWords = GetCountedList(inputString, delimiterChars);
+
+                var findSingleQuote = topWords.Any(x => x.Substring(0, 1) == '\''.ToString() || x.Substring(x.Length - 1) == '\''.ToString());
+
+                if (findSingleQuote)
+                {
+                    string word = string.Empty;
+                    foreach (var item in topWords)
+                        word += item;
+
+                    topWordsSingleQuotes = GetCountedList(word, singleQuote);
+                }
+            }
+
+            return topWordsSingleQuotes.Count() != 0 ? topWordsSingleQuotes : topWords;
+        }
+
+        static List<string> GetCountedList(string input, char[] c)
+        {
+            var list = input
+                    .Split(c, StringSplitOptions.RemoveEmptyEntries)
                     .GroupBy(gr => gr.ToLower())
                     .Select(x => new { Key = x.Key, Count = x.Count() })
                     .OrderByDescending(x => x.Count).Take(3)
                     .Select(group => group.Key).ToList();
-            }
-            return topWords;
+
+            return list;
         }
     }
 }
